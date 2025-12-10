@@ -20,15 +20,20 @@ RUN npm run build
 # 第二阶段：创建静态文件服务器镜像
 FROM nginx:alpine
 
+# 复制自定义Nginx配置
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # 复制构建产物到Nginx的静态文件目录
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist /app
 
 # 复制配置文件到Nginx配置目录
-COPY config /usr/share/nginx/html/config
+COPY config /app/config
 
+# 设置目录权限，确保Nginx进程可以访问
+RUN chmod -R 755 /app && chown -R nginx:nginx /app
 
-# 暴露端口,Nginx默认监听80端口
-EXPOSE 80
+# 暴露端口,Nginx默认监听3018端口
+EXPOSE 3018
 
 # 启动Nginx
 CMD ["nginx", "-g", "daemon off;"]

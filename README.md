@@ -1,13 +1,16 @@
 # 个人在线简历 - make-cv
 
 ## 一、项目简介
-`make-cv` 是一个使用 React 和 Vite 构建的个人在线简历项目。它提供了简洁美观的界面，支持从 Markdown 文件加载简历内容，具有良好的可定制性，还方便进行打印操作。用户可以通过修改配置文件轻松定制简历的标题、头部信息等内容，同时支持使用 Markdown 语法撰写详细的简历信息。
+`make-cv` 是一个使用 React 19 和 Vite 7 构建的现代化个人在线简历项目。它提供了简洁美观的界面，支持从 Markdown 文件动态加载简历内容，具有高度的可定制性，同时提供了良好的打印体验。用户可以通过修改配置文件轻松定制简历的各个方面，使用熟悉的 Markdown 语法撰写详细的简历信息。
 
 ## 二、功能特性
-1. **Markdown 支持**：使用 Markdown 文件编写简历内容，易于维护和格式调整。
-2. **可定制性**：通过修改 `config.yml` 文件，能自定义简历的标题、头部信息、是否显示头部等。
-3. **美观的界面**：采用简洁美观的设计风格，模拟纸张效果并使用大头针装饰，增强视觉吸引力。
-4. **打印提醒**：提供打印提示，方便用户将简历导出为 PDF 文件。
+- **💡 Markdown 支持**：使用 Markdown 文件编写简历内容，语法简单，易于维护和格式调整
+- **🎨 高度可定制**：通过 `config.yml` 文件自定义简历标题、头部信息、显示选项等
+- **✨ 美观界面**：采用简洁的设计风格，模拟真实纸张效果并使用大头针装饰，视觉效果出色
+- **🖨️ 打印友好**：提供打印提示，优化打印布局，方便导出为 PDF 文件
+- **⚡ 快速加载**：基于 Vite 构建，性能优异，加载速度快
+- **📱 响应式设计**：适配不同屏幕尺寸，在各种设备上都有良好的显示效果
+- **🔧 易于部署**：支持静态部署和 Docker 容器化部署，部署方式灵活
 
 ## 三、技术栈
 ### 前端框架
@@ -26,22 +29,35 @@ make-cv/
 ├── .github/                 # GitHub 工作流配置
 │   └── workflows/
 │       └── docker-publish.yml
-├── public/                  
-│   ├── resume.md            # 简历 Markdown 文件
-│   ├── config.yml           # 配置文件
-├── src/                     # 源代码
-│   ├── components/          # 组件
-│   │   ├── Footer.jsx
-│   │   ├── HeaderInfo.jsx
-│   │   └── ResumeContent.jsx
-│   ├── App.jsx              # 主应用组件
+├── config/                  # 配置文件目录
+│   ├── config.yml           # 简历配置文件
+│   └── resume.md            # 简历 Markdown 内容
+├── public/                  # 静态资源目录
+│   └── cv_logo.webp         # 简历 Logo
+├── src/                     # 源代码目录
+│   ├── assets/              # 静态资源文件
+│   │   ├── pin-left.png     # 左侧大头针图片
+│   │   ├── pin-right.png    # 右侧大头针图片
+│   │   ├── stick.png        # 底部装饰图片
+│   │   └── react.svg        # React Logo
+│   ├── components/          # 组件目录
+│   │   ├── Footer.jsx       # 页脚组件
+│   │   ├── HeaderInfo.jsx   # 头部信息组件
+│   │   └── ResumeContent.jsx # 简历内容组件
 │   ├── App.css              # 主应用样式
-│   ├── main.jsx             # 入口文件
+│   ├── App.jsx              # 主应用组件
+│   ├── main.jsx             # 应用入口文件
 │   └── style.css            # 全局样式
-├── index.html               # 入口 HTML 文件
+├── .dockerignore            # Docker 忽略文件
+├── .gitignore               # Git 忽略文件
+├── Dockerfile               # Docker 构建文件
+├── eslint.config.js         # ESLint 配置文件
+├── index.html               # HTML 入口文件
+├── nginx.conf               # Nginx 配置文件
 ├── package.json             # 项目依赖和脚本配置
-├── package-lock.json        # 锁定依赖版本
-└── README.md                # 项目说明文档
+├── package-lock.json        # 依赖版本锁定文件
+├── README.md                # 项目说明文档
+└── vite.config.js           # Vite 配置文件
 ```
 
 ## 五、快速开始
@@ -130,20 +146,65 @@ git push origin gh-pages
 稍等片刻，即可通过仓库的 GitHub Pages 链接访问简历。链接格式通常为 `https://<your-github-username>.github.io/<repository-name>`。
 
 ### Docker 部署
-本项目已经推送至Dockerhub，支持使用 Docker 进行部署。以下是详细的 Docker 部署步骤：
+本项目支持使用 Docker 进行容器化部署，以下是详细的部署步骤：
 
-#### 1. 拉取镜像
-在需要部署的服务器上，拉取并运行 Docker 镜像：
+#### 1. 本地构建镜像
+在项目根目录下执行以下命令构建镜像：
+```bash
+# 构建镜像
+docker build -t make-cv .
+```
+
+#### 2. 运行容器
+
+##### 基本运行方式
+```bash
+# 运行容器
+docker run -d -p 3018:3018 --name make-cv-container make-cv
+```
+
+##### 挂载自定义配置文件（推荐）
+```bash
+# 挂载本地配置目录
+docker run -d -p 3018:3018 -v $(pwd)/config:/app/config --name make-cv-container make-cv
+```
+
+##### 使用自定义端口
+如果主机3018端口已被占用，可以使用其他端口：
+```bash
+# 使用8080端口映射
+docker run -d -p 8080:3018 -v $(pwd)/config:/app/config make-cv
+```
+
+#### 3. 拉取预构建镜像
+本项目已推送至 Dockerhub，也可以直接拉取使用：
 ```bash
 # 拉取镜像
 docker pull pinger68/make-cv:latest
 
 # 运行容器
-docker run -d -p 3018:3018 -v /make-cv/config:/app/config pinger68/make-cv:latest
+docker run -d -p 3018:3018 -v $(pwd)/config:/app/config pinger68/make-cv:latest
 ```
 
-#### 2. 访问简历
-运行以上命令后，你可以通过访问服务器的 IP 地址和端口号（例如 `http://<server-ip>:3018`）来查看简历。
+#### 4. 访问简历
+运行容器后，可以通过以下方式访问简历：
+- 基本运行：`http://服务器IP:3018`
+- 自定义端口：`http://服务器IP:8080`（根据实际映射端口调整）
+
+#### 5. 容器管理命令
+```bash
+# 查看容器状态
+docker ps
+
+# 查看容器日志
+docker logs make-cv-container
+
+# 停止容器
+docker stop make-cv-container
+
+# 删除容器
+docker rm make-cv-container
+```
 
 ## 八、贡献
 如果你发现任何问题或有改进建议，欢迎提交 Issue 或 Pull Request。
