@@ -27,7 +27,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY config /usr/share/nginx/html/config
 
 # 暴露端口
-EXPOSE 80
+EXPOSE 3018
 
 # 启动Nginx
 CMD ["nginx", "-g", "daemon off;"]
