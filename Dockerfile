@@ -8,8 +8,8 @@ WORKDIR /app
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 安装生产依赖
-RUN npm install --production
+# 安装所有依赖（包括开发依赖，用于构建）
+RUN npm install
 
 # 复制项目文件
 COPY . .
