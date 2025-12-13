@@ -12,7 +12,7 @@ const ResumeContent = ({ resumePath }) => {
     // ResumeContent.jsx（优化 fetch 逻辑）
     const fetchResume = async () => {
       try {
-        const response = await fetch(resumePath);
+        const response = await fetch(resumePath+'?t=' + Date.now());
         const contentType = response.headers.get('content-type');
 
         if (!contentType?.includes('text/markdown') && !contentType?.includes('text/plain')) {

@@ -11,6 +11,10 @@
 - **⚡ 快速加载**：基于 Vite 构建，性能优异，加载速度快
 - **📱 响应式设计**：适配不同屏幕尺寸，在各种设备上都有良好的显示效果
 - **🔧 易于部署**：支持静态部署和 Docker 容器化部署，部署方式灵活
+- **🔄 实时更新**：添加防缓存机制，修改配置文件后刷新页面即可看到更新
+- **🔌 自定义 Nginx 配置**：内置优化的 Nginx 配置，支持 React 单页应用路由、正确的 MIME 类型设置和性能优化
+- **🌐 端口可配置**：支持自定义 Docker 容器监听端口，灵活适应不同的部署环境
+- **📁 配置文件挂载**：支持将配置文件目录挂载到容器外部，方便实时修改和管理
 
 ## 三、技术栈
 ### 前端框架
@@ -60,6 +64,7 @@ make-cv/
 └── vite.config.js           # Vite 配置文件
 ```
 
+
 ## 五、快速开始
 ### 1. 克隆项目
 ```bash
@@ -92,6 +97,7 @@ npm run preview
 
 ## 六、配置说明
 可以通过修改 `config.yml` 文件来定制简历的相关信息：
+
 ```yaml
 title: 'make-cv - 漂亮的在线个人简历'
 showHeader: true
@@ -102,11 +108,13 @@ headerInfo:
   phone: '188****8888'
   email: 'zhangsan@makecv.com'
 ```
+
 - `title`：简历页面的标题。
 - `showHeader`：是否显示头部信息。
 - `showPrintStick`：是否显示底部的打印标签。
 - `headerInfo`：头部信息，包括照片、姓名、电话和邮箱。
 
+简历内容可以在 `config/resume.md` 文件中使用 Markdown 语法编写。
 
 ## 七、部署教程
 
@@ -146,7 +154,7 @@ git push origin gh-pages
 稍等片刻，即可通过仓库的 GitHub Pages 链接访问简历。链接格式通常为 `https://<your-github-username>.github.io/<repository-name>`。
 
 ### Docker 部署
-本项目支持使用 Docker 进行容器化部署，以下是详细的部署步骤：
+本项目支持使用 Docker 进行容器化部署，采用两阶段构建，包含优化的 Nginx 配置：
 
 #### 1. 本地构建镜像
 在项目根目录下执行以下命令构建镜像：
@@ -165,14 +173,14 @@ docker run -d -p 3018:3018 --name make-cv-container make-cv
 
 ##### 挂载自定义配置文件（推荐）
 ```bash
-# 挂载本地配置目录
+# 挂载本地配置目录到容器内部的/app/config目录
 docker run -d -p 3018:3018 -v $(pwd)/config:/app/config --name make-cv-container make-cv
 ```
 
 ##### 使用自定义端口
 如果主机3018端口已被占用，可以使用其他端口：
 ```bash
-# 使用8080端口映射
+# 使用8080端口映射到容器的3018端口
 docker run -d -p 8080:3018 -v $(pwd)/config:/app/config make-cv
 ```
 
@@ -191,13 +199,22 @@ docker run -d -p 3018:3018 -v $(pwd)/config:/app/config pinger68/make-cv:latest
 - 基本运行：`http://服务器IP:3018`
 - 自定义端口：`http://服务器IP:8080`（根据实际映射端口调整）
 
-#### 5. 容器管理命令
+#### 5. 验证配置文件挂载
+```bash
+# 检查配置文件是否正确挂载
+docker exec -it make-cv-container ls -la /app/config
+```
+
+#### 6. 检查容器日志
+```bash
+# 查看容器日志，确认服务正常运行
+docker logs make-cv-container
+```
+
+#### 7. 容器管理命令
 ```bash
 # 查看容器状态
 docker ps
-
-# 查看容器日志
-docker logs make-cv-container
 
 # 停止容器
 docker stop make-cv-container
@@ -206,8 +223,43 @@ docker stop make-cv-container
 docker rm make-cv-container
 ```
 
-## 八、贡献
+## 八、Nginx 配置说明
+
+本项目包含自定义的 `nginx.conf` 文件，针对 React 单页应用和简历内容的特点进行了优化配置：
+
+### 主要特性
+- **React 单页应用支持**：配置 `try_files $uri $uri/ /index.html;` 确保所有路由请求都返回 index.html
+- **正确的 MIME 类型设置**：为 YAML (.yaml/.yml) 和 Markdown (.md) 文件设置了正确的 Content-Type
+- **智能缓存策略**：
+  - 静态资源（CSS/JS/图片）缓存1年，提高加载速度
+  - 配置文件和 Markdown 文件不缓存，确保实时更新
+- **性能优化**：启用 gzip 压缩，支持多种文件类型的压缩
+
+### 自定义 Nginx 配置
+如果需要修改 Nginx 配置，可以直接编辑项目根目录下的 `nginx.conf` 文件，然后重新构建 Docker 镜像：
+
+```bash
+# 修改 nginx.conf 后重新构建镜像
+docker build -t make-cv .
+```
+
+## 九、防缓存机制说明
+
+为了确保配置文件和简历内容的实时更新，本项目在前端代码中实现了防缓存机制：
+
+1. **URL 时间戳参数**：在 `App.jsx` 和 `ResumeContent.jsx` 组件中，为 fetch 请求添加了时间戳参数 `?t=` + Date.now()
+2. **Nginx 配置配合**：Nginx 配置中明确指定 YAML 和 Markdown 文件不缓存
+3. **实时加载**：每次页面刷新时，浏览器都会请求最新的配置文件和简历内容
+
+### 验证防缓存机制
+```bash
+# 使用 curl 测试缓存头设置
+curl -I http://localhost:3018/config/config.yml
+# 应该看到：Cache-Control: no-cache, no-store, must-revalidate
+```
+
+## 十、贡献
 如果你发现任何问题或有改进建议，欢迎提交 Issue 或 Pull Request。
 
-## 九、许可证
+## 十一、许可证
 本项目采用 [MIT 许可证](LICENSE)。

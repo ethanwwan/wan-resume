@@ -19,9 +19,9 @@ const App = () => {
 
     const fetchConfig = async () => {
       try {
-        const response = await fetch(configPath);
-
+        const response = await fetch(configPath+'?t=' + Date.now());
         const contentType = response.headers.get('content-type');
+        
         if (!contentType?.includes('text/yaml') && !contentType?.includes('text/plain')) {
           throw new Error("配置文件不存在或路径错误");
         }
