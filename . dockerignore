@@ -6,3 +6,5 @@ build
 .env
 .git
 .gitignore
+npm-debug.log
+.vscode
