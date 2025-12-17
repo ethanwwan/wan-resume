@@ -18,7 +18,7 @@ const Footer = ({ showPrintStick }) => {
       )}
 
        <div className="powered-by">
-          Powered by <a href="https://github.com/PGWan68/make-cv" target="_blank" rel="noopener noreferrer">make-cv</a>
+          Powered by <a href="https://github.com/ethanwwan/wan-resume" target="_blank" rel="noopener noreferrer">wan-resume</a>
         </div>
       
     </footer>

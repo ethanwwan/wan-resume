@@ -29,7 +29,7 @@
 
 ## 四、项目结构
 ```
-make-cv/
+wan-resume/
 ├── .github/                 # GitHub 工作流配置
 │   └── workflows/
 │       └── docker-publish.yml
@@ -68,8 +68,8 @@ make-cv/
 ## 五、快速开始
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/PGWan68/make-cv.git
-cd make-cv
+git clone https://github.com/ethanwwan/wan-resume.git
+cd wan-resume
 ```
 
 ### 2. 安装依赖
@@ -99,14 +99,14 @@ npm run preview
 可以通过修改 `config.yml` 文件来定制简历的相关信息：
 
 ```yaml
-title: 'make-cv - 漂亮的在线个人简历'
+title: 'wan-resume - 漂亮的在线个人简历'
 showHeader: true
 showPrintStick: true
 headerInfo:
   photo: 'https://fileswan.x.ddnsto.com/imgs/IMG_2948.JPG'
   name: '张三(AI生成)'
   phone: '188****8888'
-  email: 'zhangsan@makecv.com'
+  email: 'zhangsan@resume.com'
 ```
 
 - `title`：简历页面的标题。
@@ -160,7 +160,7 @@ git push origin gh-pages
 在项目根目录下执行以下命令构建镜像：
 ```bash
 # 构建镜像
-docker build -t make-cv .
+docker build -t wan-resume .
 ```
 
 #### 2. 运行容器
@@ -168,30 +168,30 @@ docker build -t make-cv .
 ##### 基本运行方式
 ```bash
 # 运行容器
-docker run -d -p 3018:3018 --name make-cv-container make-cv
+docker run -d -p 3018:3018 --name wan-resume-container wan-resume
 ```
 
 ##### 挂载自定义配置文件（推荐）
 ```bash
 # 挂载本地配置目录到容器内部的/app/config目录
-docker run -d -p 3018:3018 -v $(pwd)/config:/app/config --name make-cv-container make-cv
+docker run -d -p 3018:3018 -v $(pwd)/config:/app/config --name wan-resume-container wan-resume
 ```
 
 ##### 使用自定义端口
 如果主机3018端口已被占用，可以使用其他端口：
 ```bash
 # 使用8080端口映射到容器的3018端口
-docker run -d -p 8080:3018 -v $(pwd)/config:/app/config make-cv
+docker run -d -p 8080:3018 -v $(pwd)/config:/app/config wan-resume
 ```
 
 #### 3. 拉取预构建镜像
 本项目已推送至 Dockerhub，也可以直接拉取使用：
 ```bash
 # 拉取镜像
-docker pull pinger68/make-cv:latest
+docker pull pinger68/wan-resume:latest
 
 # 运行容器
-docker run -d -p 3018:3018 -v $(pwd)/config:/app/config pinger68/make-cv:latest
+docker run -d -p 3018:3018 -v $(pwd)/config:/app/config pinger68/wan-resume:latest
 ```
 
 #### 4. 访问简历
@@ -202,13 +202,13 @@ docker run -d -p 3018:3018 -v $(pwd)/config:/app/config pinger68/make-cv:latest
 #### 5. 验证配置文件挂载
 ```bash
 # 检查配置文件是否正确挂载
-docker exec -it make-cv-container ls -la /app/config
+docker exec -it wan-resume-container ls -la /app/config
 ```
 
 #### 6. 检查容器日志
 ```bash
 # 查看容器日志，确认服务正常运行
-docker logs make-cv-container
+docker logs wan-resume-container
 ```
 
 #### 7. 容器管理命令
@@ -217,10 +217,10 @@ docker logs make-cv-container
 docker ps
 
 # 停止容器
-docker stop make-cv-container
+docker stop wan-resume-container
 
 # 删除容器
-docker rm make-cv-container
+docker rm wan-resume-container
 ```
 
 ## 八、Nginx 配置说明
@@ -240,7 +240,7 @@ docker rm make-cv-container
 
 ```bash
 # 修改 nginx.conf 后重新构建镜像
-docker build -t make-cv .
+docker build -t wan-resume .
 ```
 
 ## 九、防缓存机制说明

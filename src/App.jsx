@@ -1,4 +1,4 @@
-// make-cv/src/App.jsx
+// wan-resume/src/App.jsx
 import React from 'react';
 import HeaderInfo from './components/HeaderInfo';
 import ResumeContent from './components/ResumeContent';

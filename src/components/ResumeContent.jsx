@@ -1,4 +1,4 @@
-// make-cv/src/components/ResumeContent.jsx
+// wan-resume/src/components/ResumeContent.jsx
 import React, { useEffect, useState } from 'react';
 import markdownIt from 'markdown-it';
 

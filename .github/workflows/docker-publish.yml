@@ -2,8 +2,8 @@ name: Build and Publish Docker Image
 
 # 定义镜像名称（统一管理）
 env:
-  IMAGE_NAME: "make-cv" 
-  DOCKERHUB_REPO: "make-cv"
+  IMAGE_NAME: "wan-resume" 
+  DOCKERHUB_REPO: "wan-resume"
 
 on:
   # 仅在创建新 Tag 时触发
