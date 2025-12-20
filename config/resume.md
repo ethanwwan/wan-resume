@@ -10,7 +10,7 @@
 - **技术博客**：[张三的技术博客](http://zhangsanblog.github.io)
 - **GitHub**：[张三的GitHub](http://github.com/zhangsan)
 - **手机**：13812345678
-- **邮箱**：zhangsan@example.com
+- **邮箱**：zhangsan@resume.com
 - **QQ/微信**：88888888
 - **期望职位**：前端全栈工程师
 - **期望薪资**：税前月薪30k~40k，特别喜欢的公司可例外
